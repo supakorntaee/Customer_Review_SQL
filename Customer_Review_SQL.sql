@@ -87,7 +87,7 @@ select * from Reviews limit 5;
 
 
 
--- 1. หาเรตติ้งเฉลี่ยของสินค้าแต่ละรายการ
+-- 1. Find the average rating of each product.
 SELECT 
     p.product_id,
     p.product_name,
@@ -97,7 +97,7 @@ JOIN Reviews AS r
 ON p.product_id = r.product_id
 GROUP BY p.product_name
 
--- 2. ดึงข้อมูลลูกค้าที่ให้เรตติ้งสูง เงื่อนไขคือลูกค้าให้เรตติ้งมากกว่า 4 คะแนน
+-- 2. Retrieve customer data who gave a rating higher than 4.
 SELECT 
     c.name,
     c.contact_info
@@ -106,7 +106,7 @@ INNER JOIN reviews AS r
 ON c.customer_id = r.customer_id
 WHERE r.rating > 4
 
--- 3. นับจำนวนครั้งที่ลูกค้าแต่ละคนเข้ามารีวิว
+-- 3. Count the number of times each customer wrote a review.
 SELECT
     c.name,
     COUNT(r.review_id) AS review_count
@@ -115,7 +115,7 @@ JOIN Reviews AS r
 ON c.customer_id = r.customer_id
 GROUP BY c.name
 
--- 4.หาค่าเฉลี่ยเรตติ้งในแต่ละวันในสัปดาห์
+-- 4.Find the average rating for each day of the week.
 SELECT 
     STRFTIME('%w', date) AS day_of_week,
     AVG(rating) AS average_rating
@@ -123,7 +123,7 @@ FROM reviews
 GROUP BY day_of_week
 ใช้ strftime เพื่อแยกวันในสัปดาห์ 
 
--- 5. หาว่าสินค้าที่ได้เรตติ้งเท่ากับหรือมากกว่า 3.5 เป็นสินค้าชนิดใดบ้าง
+-- 5. Find which products have a rating equal to or greater than 3.5.
 SELECT 
     p.product_id,
     p.product_name,
@@ -134,13 +134,13 @@ USING (product_id)
 GROUP BY p.product_id
 HAVING AVG(r.rating) >=3.5
 
--- 6.นับจำนวนข้อความที่รีวิวในด้านลบ รีวิวด้านลบในที่นี้จะมีคำว่า "disappointed"
+-- 6.Count the number of negative reviews.
 SELECT
     count(review_text)
 FROM Reviews 
 WHERE review_text LIKE '%disappointed%'
 
--- 7.ลูกค้าคนไหนบ้างที่เคยเขียนข้อความรีวิวในด้านบวกและให้คะแนนเรตติ้งสูง (เท่ากับหรือมากกว่า 4)  [รีวิวด้านบวก มีคำว่า "excellent","impressive", "recommend"]
+-- 7.Find which customers wrote positive reviews (reviews containing the words "excellent", "impressive", or "recommend") and gave a high rating (rating equal to or greater than 4).
 SELECT 
     c.name,
     r.review_text
@@ -149,7 +149,7 @@ JOIN reviews r
 USING (customer_id)
 WHERE r.rating >=4 AND r.review_text LIKE '%excellent%' OR '%impressive%' OR '%recommend%'
     
--- 8.ลูกค้าแต่ละคนมักเขียนข้อความรีวิวโดยเฉลี่ยกี่คำ 
+-- 8.On average, how many words does each customer use in their reviews?
 SELECT
     c.name,
     c.contact_info,
